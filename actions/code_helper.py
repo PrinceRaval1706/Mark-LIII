@@ -1,4 +1,4 @@
-import subprocess
+﻿import subprocess
 import sys
 import json
 import re
@@ -55,7 +55,7 @@ def _resolve_save_path(output_path: str, language: str) -> Path:
         p = Path(output_path)
         return p if p.is_absolute() else DESKTOP / p
     ext = ext_map.get((language or "python").lower(), ".py")
-    return DESKTOP / f"jarvis_code{ext}"
+    return DESKTOP / f"nexus_code{ext}"
 
 
 def _read_file(file_path: str) -> tuple[str, str]:
@@ -95,7 +95,7 @@ def _has_error(output: str) -> bool:
 def _take_screenshot() -> Path | None:
     try:
         import pyautogui
-        screenshot_path = Path.home() / "Desktop" / f"jarvis_debug_{int(time.time())}.png"
+        screenshot_path = Path.home() / "Desktop" / f"nexus_debug_{int(time.time())}.png"
         screenshot = pyautogui.screenshot()
         screenshot.save(str(screenshot_path))
         print(f"[Code] 📸 Screenshot: {screenshot_path}")
@@ -241,7 +241,7 @@ def _run_file(path: Path, args: list, timeout: int) -> str:
 
 def _build(description, language, output_path, args, timeout, speak=None, player=None) -> str:
     if not description:
-        return "Please describe what you want me to build, sir."
+        return "Please describe what you want me to build."
 
     if player:
         player.write_log("[Code] Build started...")
@@ -266,7 +266,7 @@ def _build(description, language, output_path, args, timeout, speak=None, player
 
         if not _has_error(last_output):
             msg = (
-                f"Build complete, sir. "
+                f"Build complete. "
                 f"The code is working after {attempt} attempt{'s' if attempt > 1 else ''}. "
                 f"Saved to {path}."
             )
@@ -286,7 +286,7 @@ def _build(description, language, output_path, args, timeout, speak=None, player
             return msg
 
     msg = (
-        f"I was unable to build a working version after {MAX_BUILD_ATTEMPTS} attempts, sir. "
+        f"I was unable to build a working version after {MAX_BUILD_ATTEMPTS} attempts. "
         f"The last error was: {last_output[:200]}"
     )
     if speak: speak(msg)
@@ -294,7 +294,7 @@ def _build(description, language, output_path, args, timeout, speak=None, player
 
 def _write_action(description, language, output_path, player) -> str:
     if not description:
-        return "Please describe what you want me to write, sir."
+        return "Please describe what you want me to write."
     if player:
         player.write_log("[Code] Writing code...")
     try:
@@ -307,9 +307,9 @@ def _write_action(description, language, output_path, player) -> str:
 
 def _edit_action(file_path, instruction, player) -> str:
     if not file_path:
-        return "Please provide a file path to edit, sir."
+        return "Please provide a file path to edit."
     if not instruction:
-        return "Please describe what change to make, sir."
+        return "Please describe what change to make."
 
     content, err = _read_file(file_path)
     if err:
@@ -347,7 +347,7 @@ def _explain_action(file_path, code, player) -> str:
         if err:
             return err
     if not code:
-        return "Please provide code or a file path to explain, sir."
+        return "Please provide code or a file path to explain."
 
     if player:
         player.write_log("[Code] Analyzing code...")
@@ -371,7 +371,7 @@ Explanation:"""
 
 def _run_action(file_path, args, timeout, player) -> str:
     if not file_path:
-        return "Please provide a file path to run, sir."
+        return "Please provide a file path to run."
     p = Path(file_path)
     if not p.exists():
         return f"File not found: {file_path}"
@@ -387,7 +387,7 @@ def _optimize_action(file_path, code, language, output_path, player) -> str:
         if err:
             return err
     if not code:
-        return "Please provide code or a file path to optimize, sir."
+        return "Please provide code or a file path to optimize."
 
     if player:
         player.write_log("[Code] Optimizing code...")
@@ -446,7 +446,7 @@ def _screen_debug_action(description, file_path, player, speak=None) -> str:
 
     screenshot_path = _take_screenshot()
     if not screenshot_path:
-        return "Could not take screenshot, sir. Please make sure PyAutoGUI is installed."
+        return "Could not take screenshot. Please make sure PyAutoGUI is installed."
 
 
     file_content = ""

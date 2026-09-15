@@ -1,4 +1,4 @@
-import subprocess
+﻿import subprocess
 import sys
 import json
 import re
@@ -14,7 +14,7 @@ def get_base_dir():
 
 BASE_DIR         = get_base_dir()
 API_CONFIG_PATH  = BASE_DIR / "config" / "api_keys.json"
-PROJECTS_DIR     = Path.home() / "Desktop" / "JarvisProjects"
+PROJECTS_DIR     = Path.home() / "Desktop" / "NexusProjects"
 MAX_FIX_ATTEMPTS = 5
 MODEL_PLANNER    = "gemini-flash-latest"
 MODEL_WRITER     = "gemini-flash-latest"
@@ -452,7 +452,7 @@ def _build_project(
     try:
         plan = _plan_project(description, language)
     except RateLimitError:
-        msg = "Rate limit reached, sir. Please try again in a moment."
+        msg = "Rate limit reached. Please try again in a moment."
         if speak: speak(msg)
         return msg
     except ValueError as e:
@@ -460,7 +460,7 @@ def _build_project(
         if speak: speak(msg)
         return msg
 
-    proj_name    = project_name or plan.get("project_name", "jarvis_project")
+    proj_name    = project_name or plan.get("project_name", "nexus_project")
     proj_name    = re.sub(r"[^\w\-]", "_", proj_name)
     project_dir  = PROJECTS_DIR / proj_name
     project_dir.mkdir(parents=True, exist_ok=True)
@@ -509,7 +509,7 @@ def _build_project(
                 break
 
     if not file_codes:
-        msg = "I could not write any project files, sir."
+        msg = "I could not write any project files."
         if speak: speak(msg)
         return msg
 
@@ -529,7 +529,7 @@ def _build_project(
 
         if not _has_error(last_output, run_command):
             msg = (
-                f"Project '{proj_name}' is working, sir. "
+                f"Project '{proj_name}' is working. "
                 f"Built in {attempt} attempt{'s' if attempt > 1 else ''}. "
                 f"Saved to: {project_dir}"
             )
@@ -569,7 +569,7 @@ def _build_project(
             log(f"Fix step failed: {e}")
 
     msg = (
-        f"I couldn't fully fix '{proj_name}' after {MAX_FIX_ATTEMPTS} attempts, sir. "
+        f"I couldn't fully fix '{proj_name}' after {MAX_FIX_ATTEMPTS} attempts. "
         f"Project is saved at {project_dir} — open it in VSCode and check manually."
     )
     if speak: speak(msg)
@@ -590,7 +590,7 @@ def dev_agent(
     timeout      = int(p.get("timeout", 30))
 
     if not description:
-        return "Please describe the project you want me to build, sir."
+        return "Please describe the project you want me to build."
 
     return _build_project(
         description  = description,

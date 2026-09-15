@@ -51,7 +51,7 @@ def _platform_os() -> str:
     )
 
 def _get_os() -> str:
-    return _load_config().get("os_system", _platform_os()).lower()
+    return _load_config().get("platform", _platform_os()).lower()
 
 
 def _get_api_key() -> str:
@@ -62,7 +62,7 @@ _SAFE_SCREENSHOT_ROOTS = (
 )
 
 def _safe_screenshot_path(requested: str | None) -> Path:
-    fallback = Path.home() / "Desktop" / "jarvis_screenshot.png"
+    fallback = Path.home() / "Desktop" / "nexus_screenshot.png"
     if not requested:
         return fallback
     try:

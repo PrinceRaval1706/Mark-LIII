@@ -1,5 +1,5 @@
 """
-Local LLM client for MARK XL.
+Local LLM client for NEXUS.
 
 Supports two backends — selected via  "llm_provider"  in config/api_keys.json:
 
@@ -134,7 +134,7 @@ def warmup_model(system_prompt: str | None = None) -> bool:
     to evaluate the small delta (user message ± time context) instead of the full
     300-500 token system prompt → drops first-token latency from ~17 s to <1 s.
 
-    Pass the *static* part of the system prompt (the JARVIS protocol text, without
+    Pass the *static* part of the system prompt (the NEXUS protocol text, without
     timestamps or per-minute context) so the prefix stays valid across calls.
     """
     url, model = get_llm_settings()

@@ -18,8 +18,8 @@ def get_config() -> dict:
         return {}
 
 def get_os() -> str:
-    """Returns: 'windows' | 'mac' | 'linux'"""
-    return get_config().get("os_system", _platform_os()).lower()
+    """Returns: 'windows' | 'mac' | 'linux' — the underlying OS platform."""
+    return get_config().get("platform", _platform_os()).lower()
 
 def is_windows() -> bool: return get_os() == "windows"
 def is_mac()     -> bool: return get_os() == "mac"

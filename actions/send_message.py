@@ -28,7 +28,7 @@ def _get_os() -> str:
         cfg = json.loads(
             (_base_dir() / "config" / "api_keys.json").read_text(encoding="utf-8")
         )
-        return cfg.get("os_system", "windows").lower()
+        return cfg.get("platform", "windows").lower()
     except Exception:
         return "windows"
 

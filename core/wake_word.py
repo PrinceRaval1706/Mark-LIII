@@ -1,5 +1,5 @@
 """
-Local wake-word detection for JARVIS ("Hey Jarvis").
+Local wake-word detection for NEXUS.
 
 Design goals:
   • ZERO cost when the feature is off — openwakeword is imported ONLY inside
@@ -12,8 +12,9 @@ Design goals:
   • Fully local & offline — audio fed here never leaves the machine; there is no
     network call except the one-time model download the user triggers from the UI.
 
-openwakeword ships small ONNX models (a few MB each) and runs comfortably on a
-CPU. The pretrained wake phrase used here is "Hey Jarvis".
+The wake phrase is a third-party openwakeword model: it listens for the fixed,
+pre-trained phrase "Hey Jarvis". Keep that phrase and the model identifier intact —
+it is a quoted wake phrase provided by a third-party model, not an identity.
 """
 from __future__ import annotations
 
@@ -24,7 +25,8 @@ import threading
 from pathlib import Path
 from typing import Callable
 
-# Pretrained openwakeword model that listens for "Hey Jarvis".
+# Pretrained openwakeword model that listens for the wake phrase "Hey Jarvis".
+# This model identifier is third-party and must be preserved intact.
 WAKE_MODEL = "hey_jarvis"
 # Score in [0,1]; above this counts as a detection. Tunable per environment.
 DEFAULT_THRESHOLD = 0.5
@@ -137,7 +139,7 @@ class WakeWordDetector:
         self._ready = True
         self._thread = threading.Thread(target=self._loop, daemon=True, name="WakeWordThread")
         self._thread.start()
-        self._logger("Wake word: listening for 'Hey Jarvis'.")
+        self._logger("Wake word: listening for wake phrase.")
         return True
 
     def stop(self) -> None:
@@ -178,7 +180,7 @@ class WakeWordDetector:
                 scores = self._model.predict(np.asarray(frame, dtype=np.int16))
                 score = 0.0
                 if isinstance(scores, dict):
-                    # match the jarvis model regardless of exact key suffix
+                    # match the wake model regardless of exact key suffix
                     for k, v in scores.items():
                         if "jarvis" in k.lower():
                             score = max(score, float(v))

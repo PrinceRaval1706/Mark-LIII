@@ -1,5 +1,5 @@
 """
-Screen & webcam capture for JARVIS vision.
+Screen & webcam capture for NEXUS vision.
 
 Provides the two capture entry points main.py uses — `_capture_screen()` and
 `_capture_camera()` — plus their helpers (compression, camera auto-detection,
@@ -62,7 +62,7 @@ def _save_config_key(key: str, value) -> None:
 
 
 def _get_os() -> str:
-    return _load_config().get("os_system", "windows").lower()
+    return _load_config().get("platform", "windows").lower()
 
 
 _IMG_MAX_W = 1280

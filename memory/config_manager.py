@@ -1,6 +1,16 @@
 import json
+import os
 import sys
 from pathlib import Path
+
+# Optional: if python-dotenv is installed, load a local .env file so config
+# can be supplied through the environment (see .env.example). This is a soft
+# dependency on purpose — NEXUS works with plain os.environ alone.
+try:
+    from dotenv import load_dotenv      # type: ignore
+    load_dotenv()
+except Exception:
+    pass
 
 def get_base_dir() -> Path:
     if getattr(sys, "frozen", False):
@@ -44,7 +54,8 @@ def load_api_keys() -> dict:
         return {}
 
 def get_gemini_key() -> str | None:
-    return load_api_keys().get("gemini_api_key")
+    """Gemini API key — environment wins (GEMINI_API_KEY), then config file."""
+    return os.environ.get("GEMINI_API_KEY") or load_api_keys().get("gemini_api_key")
 
 def is_configured() -> bool:
     key = get_gemini_key()
@@ -52,8 +63,8 @@ def is_configured() -> bool:
 
 
 def get_assistant_name() -> str:
-    """Return the configured assistant name, or 'JARVIS' if not set."""
-    return load_api_keys().get("assistant_name", "JARVIS") or "JARVIS"
+    """Return the configured assistant name, or 'NEXUS' if not set."""
+    return load_api_keys().get("assistant_name", "NEXUS") or "NEXUS"
 
 
 def get_user_name() -> str:
@@ -70,7 +81,7 @@ def save_assistant_config(assistant_name: str, user_name: str) -> None:
             data = json.loads(CONFIG_FILE.read_text(encoding="utf-8"))
         except Exception:
             data = {}
-    data["assistant_name"] = assistant_name.strip() or "JARVIS"
+    data["assistant_name"] = assistant_name.strip() or "NEXUS"
     data["user_name"] = user_name.strip()
     CONFIG_FILE.write_text(json.dumps(data, indent=4), encoding="utf-8")
 
@@ -105,7 +116,7 @@ def save_voice(voice_name: str) -> None:
 
 
 def get_wake_word_enabled() -> bool:
-    """Whether local wake-word gating is on (assistant sleeps until 'Hey Jarvis')."""
+    """Whether local wake-word gating is on (assistant sleeps until the wake phrase)."""
     return load_api_keys().get("wake_word_enabled", False)
 
 
